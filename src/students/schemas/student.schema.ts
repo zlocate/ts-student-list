@@ -11,8 +11,8 @@ export class Student {
   lastName: string;
   @Prop({ required: true })
   dob: Date;
-  @Prop({ type: StudentMarks, enum: Object.keys(StudentMarks) })
-  mark: string;
+  @Prop({ enum: Object.values(StudentMarks) })
+  mark: StudentMarks;
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);

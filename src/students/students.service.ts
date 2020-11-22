@@ -3,8 +3,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { IStudent, IStudentsService } from './interfaces/index';
 import { CreateStudentDto } from './dto/createStudent.dto';
-import { debug } from 'console';
-
+import { UpdateStudentDto } from './dto/updateStudent.dto';
 @Injectable()
 export class StudentsService implements IStudentsService {
   constructor(
@@ -14,7 +13,7 @@ export class StudentsService implements IStudentsService {
     return await this.studentModel.find({}).exec();
   }
 
-  async findOne(options: object): Promise<IStudent> {
+  async findOne(options: CreateStudentDto): Promise<IStudent> {
     return await this.studentModel.findOne(options).exec();
   }
 
@@ -26,7 +25,7 @@ export class StudentsService implements IStudentsService {
     const studentItem = new this.studentModel(createStudentDto);
     return studentItem.save();
   }
-  async update(ID: number, newValue: IStudent): Promise<IStudent> {
+  async update(ID: number, newValue: UpdateStudentDto): Promise<IStudent> {
     return this.studentModel
       .findByIdAndUpdate(ID, newValue, { runValidators: true, new: true })
       .exec();

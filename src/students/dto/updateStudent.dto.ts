@@ -9,13 +9,14 @@ import {
 
 import { StudentMarks } from '../interfaces/studentMarks.enum';
 
-export class CreateStudentDto {
+export class UpdateStudentDto {
   @ApiProperty({
     description: 'Student first name',
     example: 'Denis',
   })
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
   readonly firstName: string;
   @ApiPropertyOptional({
     description: 'Student middle name',
@@ -31,17 +32,17 @@ export class CreateStudentDto {
   })
   @IsNotEmpty()
   @IsString()
+  @IsOptional()
   readonly lastName: string;
   @ApiProperty({
     description: 'Student date of birth (dob) - ISO8601 type',
     example: '2017-06-07T14:34:08.700Z',
   })
-
-  // Поскольку формат даты не оговорён в условиях задачи использовал ISO-строку
   @IsDateString({
     message:
       'dob (date of birth) must be valid date (ISO8601 string), e.g 2017-06-07T14:34:08.700Z',
   })
+  @IsOptional()
   readonly dob: Date;
   @ApiPropertyOptional({
     description: 'Student mark',
