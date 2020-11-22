@@ -8,13 +8,16 @@ import {
   Patch,
   Delete,
   NotFoundException,
+  UseFilters,
 } from '@nestjs/common';
 
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 
 import { StudentsService } from './students.service';
 import { CreateStudentDto } from './dto/createStudent.dto';
+import { UpdateStudentDto } from './dto/updateStudent.dto';
 import { ValidateObjectId } from '../shared/pipes/validate-object-id.pipes';
+import { MongoExceptionFilter } from '../shared/filters/mongo-exception.filter';
 
 @ApiTags('students')
 @Controller('students')
@@ -26,9 +29,11 @@ export class StudentsController {
     return res.json({ data });
   }
   @Get('/find')
-  public async findStudent(@Response() res, @Body() body) {
+  public async findStudent(@Response() res, @Body() body: UpdateStudentDto) {
     const queryCondition = body;
     const data = await this.studentService.findOne(queryCondition);
+    if (!data)
+      throw new NotFoundException('По заданным критериям объект не найден');
     return res.json({ data });
   }
 
@@ -38,20 +43,20 @@ export class StudentsController {
     @Param('id', new ValidateObjectId()) id: number,
   ) {
     const data = await this.studentService.findById(id);
-    console.log(data);
-    if (!data) throw new NotFoundException(`Student with id ${id} not found`);
+    if (!data) throw new NotFoundException(`Студент с id ${id} не найден`);
     return res.json({ data });
   }
 
   @Post()
   @ApiResponse({
     status: 200,
-    description: 'The record has been successfully created.',
+    description: 'Запись успешно создана.',
   })
   @ApiResponse({
     status: 400,
-    description: 'Validation error',
+    description: 'Ошибка валидации',
   })
+  @UseFilters(MongoExceptionFilter)
   public async createStudent(
     @Response() res,
     @Body() createStudentDto: CreateStudentDto,
@@ -63,33 +68,38 @@ export class StudentsController {
   @Patch(':id')
   @ApiResponse({
     status: 200,
-    description: 'Student successfully deleted',
+    description: 'Запись с указанным Id успешно удалена',
   })
   @ApiResponse({
     status: 404,
-    description: 'Student with given id not found',
+    description: 'Запись с указанным Id не найдена (студент не найден)',
   })
+  @UseFilters(MongoExceptionFilter)
   public async updateStudent(
     @Param('id', new ValidateObjectId()) id: number,
     @Response() res,
-    @Body() body,
+    @Body() updateStudentDto: UpdateStudentDto,
   ) {
-    const data = await this.studentService.update(id, body);
-    if (!data) throw new NotFoundException(`Student with id ${id} not found`);
+    const data = await this.studentService.update(id, updateStudentDto);
+    if (!data) throw new NotFoundException(`Студент с id ${id} не найден`);
     return res.json({ data });
   }
 
   @Delete(':id')
   @ApiResponse({
+    status: 200,
+    description: 'Запись с указанным Id успешно удалена',
+  })
+  @ApiResponse({
     status: 404,
-    description: 'Student with given id not found',
+    description: 'Запись с указанным id не найдена',
   })
   public async deleteStudent(
     @Param('id', new ValidateObjectId()) id: number,
     @Response() res,
   ) {
     const data = await this.studentService.delete(id);
-    if (!data) throw new NotFoundException(`Student with id ${id} not found`);
+    if (!data) throw new NotFoundException(`Студент с id ${id} не найден`);
     return res.json({ data });
   }
 }
