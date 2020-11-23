@@ -17,7 +17,7 @@ export class StudentsService implements IStudentsService {
     return await this.studentModel.findOne(options).exec();
   }
 
-  async findById(ID: number): Promise<IStudent> {
+  async findById(ID: string): Promise<IStudent> {
     return await this.studentModel.findById(ID).exec();
   }
 
@@ -25,13 +25,13 @@ export class StudentsService implements IStudentsService {
     const studentItem = new this.studentModel(createStudentDto);
     return studentItem.save();
   }
-  async update(ID: number, newValue: UpdateStudentDto): Promise<IStudent> {
+  async update(ID: string, newValue: UpdateStudentDto): Promise<IStudent> {
     return this.studentModel
       .findByIdAndUpdate(ID, newValue, { runValidators: true, new: true })
       .exec();
   }
 
-  async delete(ID: number): Promise<IStudent> {
+  async delete(ID: string): Promise<IStudent> {
     return await this.studentModel.findByIdAndRemove(ID).exec();
   }
 }

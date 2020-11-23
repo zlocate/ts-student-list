@@ -40,7 +40,7 @@ export class StudentsController {
   @Get(':id')
   public async getStudent(
     @Response() res,
-    @Param('id', new ValidateObjectId()) id: number,
+    @Param('id', new ValidateObjectId()) id: string,
   ) {
     const data = await this.studentService.findById(id);
     if (!data) throw new NotFoundException(`Студент с id ${id} не найден`);
@@ -76,7 +76,7 @@ export class StudentsController {
   })
   @UseFilters(MongoExceptionFilter)
   public async updateStudent(
-    @Param('id', new ValidateObjectId()) id: number,
+    @Param('id', new ValidateObjectId()) id: string,
     @Response() res,
     @Body() updateStudentDto: UpdateStudentDto,
   ) {
@@ -95,7 +95,7 @@ export class StudentsController {
     description: 'Запись с указанным id не найдена',
   })
   public async deleteStudent(
-    @Param('id', new ValidateObjectId()) id: number,
+    @Param('id', new ValidateObjectId()) id: string,
     @Response() res,
   ) {
     const data = await this.studentService.delete(id);
