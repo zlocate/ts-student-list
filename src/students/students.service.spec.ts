@@ -16,10 +16,10 @@ const deleteKeys = (object, keys) => {
 
 describe('StudentService', () => {
   let service: StudentsService;
-  let createdUserId: number;
+  let createdUserId: string;
   let connection;
 
-  const invalidObjectId = 123;
+  const invalidObjectId = '123';
   const defaultUser = {
     firstName: 'Denis',
     middleName: 'Z',
